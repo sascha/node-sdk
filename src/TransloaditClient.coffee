@@ -183,13 +183,22 @@ class TransloaditClient
       .digest "hex"
 
   _appendForm: (req, params, fields) ->
-    jsonParams = @_prepareParams params
-    signature  = @calcSignature jsonParams
-    form       = req.form()
+    jsonParams    = @_prepareParams params
+    signature     = @calcSignature jsonParams
+    form          = req.form()
+    streamOptions = {}
 
     form.append "params", jsonParams
 
     fields ?= []
+
+    if fields.filename
+      streamOptions.filename = fields.filename
+      delete fields['filename']
+
+    if fields.contentType
+      streamOptions.contentType = fields.contentType
+      delete fields['contentType']
 
     for key of fields
       val = fields[key]
@@ -201,7 +210,7 @@ class TransloaditClient
     form.append "signature", signature
 
     _.each @_streams, (value, key) ->
-      form.append key, value
+      form.append key, value, streamOptions
 
   _appendParamsToUrl: (url, params) ->
     jsonParams = @_prepareParams params
