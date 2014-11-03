@@ -200,6 +200,10 @@ class TransloaditClient
       streamOptions.contentType = fields.contentType
       delete fields['contentType']
 
+    if fields.contentLength
+      streamOptions.knownLength = fields.contentLength
+      delete fields['contentLength']
+
     for key of fields
       val = fields[key]
       if _.isObject(fields[key]) || _.isArray(fields[key])
@@ -323,9 +327,7 @@ class TransloaditClient
       uri     : url
       timeout : timeout
 
-    req = request[method] requestOpts, (err, res, body) ->
-      console.log body
-      
+    req = request[method] requestOpts, (err, res) ->
       if err
         return cb err
 
