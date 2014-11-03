@@ -323,7 +323,9 @@ class TransloaditClient
       uri     : url
       timeout : timeout
 
-    req = request[method] requestOpts, (err, res) ->
+    req = request[method] requestOpts, (err, res, body) ->
+      console.log body
+      
       if err
         return cb err
 
